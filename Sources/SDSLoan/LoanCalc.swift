@@ -10,23 +10,20 @@ import SDSFoundationExtension
 import SDSSwiftExtension
 
 class LoanCalc {
-    public static func paymentDates(start startDate: Date, num: Int, frequency: PaymentDateFrequency) -> any Sequence<Date> {
-        var retDates: Set<Date> = []
+    public static func paymentDates(start startDate: Date, num: Int, frequency: PaymentDateFrequency) -> [Date] {
+        var retDates: [Date] = []
         
-        for match in frequency.matchComponent {
-            var count = 0
-            Calendar.current.enumerateDates(startingAfter: startDate,
-                                            matching: match,
-                                            matchingPolicy: .strict) { result, _, stop in
-                guard let newDate = result else { return }
-                retDates.insert(newDate)
-                count += 1
-                guard count < num else { stop = true; return }
+        var foolProof = 0
+        var currentDate = startDate
+        while retDates.count < num {
+            if let nextDate = frequency.nextDate(from: currentDate) {
+                retDates.append(nextDate)
+                currentDate = nextDate
             }
+            foolProof += 1
+            guard foolProof < num * 100 else { fatalError("failed to find dates") }
         }
-        guard retDates.count >= num else { fatalError("too few dates") }
-        let sortedDates = retDates.map({ frequency.calendar.adjustDate($0, adjust: frequency.adjustment) }).sorted()
-        return sortedDates[0..<num]
+        return retDates
     }
     
     public static func payments(firstPrincipal: Decimal, condition: LoanCondition) -> [LoanPayment] {

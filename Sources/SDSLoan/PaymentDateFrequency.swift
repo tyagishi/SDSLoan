@@ -23,18 +23,18 @@ public struct PaymentDateFrequency: Sendable {
         self.calendar = calendar
     }
 
-    public func nextDate(from: Date) -> Date {
-//        switch self {
-//        case .monthly(let date, let cal):
-//            let matchComponent = date.matchComponent
-//            guard let date = cal.nextDate(after: from.advanced(by: 1), matching: matchComponent, matchingPolicy: .nextTime) else {
-//                fatalError("failed to calc date")
-//            }
-//            return date
-//        case .mathces(let matches,_):
-//            return Date()
-//        }
-        Date()
+    public func nextDate(from fromDate: Date) -> Date? {
+        var dates: Set<Date> = Set()
+        for match in matchComponent {
+            calendar.enumerateDates(startingAfter: fromDate,
+                                    matching: match,
+                                    matchingPolicy: .strict) { result, _, stop in
+                defer { stop = true }
+                guard let newDate = result else { return }
+                dates.insert(newDate)
+            }
+        }
+        return dates.sorted().first
     }
 }
 
