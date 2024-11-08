@@ -20,13 +20,13 @@ final class LoanCondition_Tests: XCTestCase {
     
     
     func test_onePaymentAmount() async throws {
-        let sut = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24, frequency: .monthly(date: .exact(5)))
+        let sut = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24, frequency: .monthly(at: 5, .noAdjustment))
         let amount = sut.onePaymentAmount
         XCTAssertEqual(amount, 42981)
     }
     
     func test_calcInterest() async throws {
-        let sut = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24, frequency: .monthly(date: .exact(5)))
+        let sut = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24, frequency: .monthly(at: 5, .noAdjustment))
         let jan5 = Calendar.date(2024, 1, 5)
         let feb5 = Calendar.date(2024, 2, 5)
         let lastPay = LoanPayment(date: jan5, principal: 40481, interest: 2500, balanceAfterThisPayment: 959519)

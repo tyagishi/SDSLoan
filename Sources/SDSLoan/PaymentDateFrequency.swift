@@ -12,63 +12,41 @@ public enum PayDateAdjustment: String, RawRepresentable, Codable, CaseIterable, 
     case noAdjustment, nextWorkingDay, prevWorkingDay
 }
 
-public struct PayDay: Sendable {
-    let day: Int
+public struct PaymentDateFrequency: Sendable {
+    let matchComponent: [DateComponents]
     let adjustment: PayDateAdjustment
     let calendar: Calendar
-    init(_ day: Int,_ adjustment: PayDateAdjustment,_ calendar: Calendar) {
-        self.day = day
+    
+    public init(matchComponent: [DateComponents], adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current) {
+        self.matchComponent = matchComponent
         self.adjustment = adjustment
         self.calendar = calendar
     }
-    public static func exact(_ day: Int, calendar: Calendar = Calendar.current) -> PayDay {
-        .init(day, .noAdjustment, calendar)
-    }
-    public static func pwd(_ day: Int, calendar: Calendar = Calendar.current) -> PayDay {
-        .init(day, .prevWorkingDay, calendar)
-    }
-    public static func nwd(_ day: Int, calendar: Calendar = Calendar.current) -> PayDay {
-        .init(day, .nextWorkingDay, calendar)
-    }
-    
+
     public func nextDate(from: Date) -> Date {
-        let matchComponent = DateComponents(day: day, hour: 0, minute: 0, second: 0)
-
-        guard let date = calendar.nextDate(after: from.advanced(by: 1), matching: matchComponent, matchingPolicy: .nextTime) else {
-            fatalError("failed to calc date")
-        }
-        return date
+//        switch self {
+//        case .monthly(let date, let cal):
+//            let matchComponent = date.matchComponent
+//            guard let date = cal.nextDate(after: from.advanced(by: 1), matching: matchComponent, matchingPolicy: .nextTime) else {
+//                fatalError("failed to calc date")
+//            }
+//            return date
+//        case .mathces(let matches,_):
+//            return Date()
+//        }
+        Date()
     }
 }
 
-public struct PayMonthDay: Sendable {
-    let month: Int
-    let day: Int
-    let adjustment: PayDateAdjustment
-    init(month: Int, day: Int,_ adjustment: PayDateAdjustment) {
-        self.month = month
-        self.day = day
-        self.adjustment = adjustment
+extension PaymentDateFrequency {
+    public static func monthly(at day: Int,_ adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current) -> PaymentDateFrequency {
+        let component = DateComponents(day: day, hour: 0, minute: 0, second: 0)
+        return PaymentDateFrequency(matchComponent: [component], adjustment: adjustment, calendar: calendar)
     }
-    public static func exact(month: Int, day: Int) -> PayMonthDay {
-        .init(month: month, day: day, .noAdjustment)
-    }
-    public static func pwd(month: Int, day: Int) -> PayMonthDay {
-        .init(month: month, day: day, .prevWorkingDay)
-    }
-    public static func nwd(month: Int, day: Int) -> PayMonthDay {
-        .init(month: month, day: day, .nextWorkingDay)
-    }
-}
-
-public enum PaymentDateFrequency: Sendable {
-    case monthly(date: PayDay)
-    // case twiceAYear(date: PayMonthDay) // for bonus payment
-
-    var inMonth: Int {
-        switch self {
-        case .monthly:
-            return 1
-        }
+    public static func twiceAYear(at month: Int,_ day: Int,_ adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current) -> PaymentDateFrequency {
+        let component1 = DateComponents(month: month, day: day, hour: 0, minute: 0, second: 0)
+        let anotherMonth = (month + 6) % 12
+        let component2 = DateComponents(month: anotherMonth, day: day, hour: 0, minute: 0, second: 0)
+        return PaymentDateFrequency(matchComponent: [component1, component2], adjustment: adjustment, calendar: calendar)
     }
 }

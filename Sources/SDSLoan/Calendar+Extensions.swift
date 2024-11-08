@@ -8,8 +8,6 @@
 import Foundation
 
 extension Calendar {
-    
-    
     public func adjustDate(_ date: Date, adjust: PayDateAdjustment) -> Date {
         switch adjust {
         case .noAdjustment: return date
