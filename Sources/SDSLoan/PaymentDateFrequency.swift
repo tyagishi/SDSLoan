@@ -15,18 +15,20 @@ public enum PayDateAdjustment: String, RawRepresentable, Codable, CaseIterable, 
 public struct PayDay: Sendable {
     let day: Int
     let adjustment: PayDateAdjustment
-    init(_ day: Int,_ adjustment: PayDateAdjustment) {
+    let calendar: Calendar
+    init(_ day: Int,_ adjustment: PayDateAdjustment,_ calendar: Calendar) {
         self.day = day
         self.adjustment = adjustment
+        self.calendar = calendar
     }
-    public static func exact(_ day: Int) -> PayDay {
-        .init(day, .noAdjustment)
+    public static func exact(_ day: Int, calendar: Calendar = Calendar.current) -> PayDay {
+        .init(day, .noAdjustment, calendar)
     }
-    public static func pwd(_ day: Int) -> PayDay {
-        .init(day, .prevWorkingDay)
+    public static func pwd(_ day: Int, calendar: Calendar = Calendar.current) -> PayDay {
+        .init(day, .prevWorkingDay, calendar)
     }
-    public static func nwd(_ day: Int) -> PayDay {
-        .init(day, .nextWorkingDay)
+    public static func nwd(_ day: Int, calendar: Calendar = Calendar.current) -> PayDay {
+        .init(day, .nextWorkingDay, calendar)
     }
 }
 

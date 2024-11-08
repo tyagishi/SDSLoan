@@ -23,4 +23,8 @@ extension Calendar {
             fatalError("failed to find")
         }
     }
+    
+    static func date(_ year: Int,_ month: Int,_ day: Int) -> Date {
+        current.date(from: DateComponents(year: year, month: month, day: day))!
+    }
 }

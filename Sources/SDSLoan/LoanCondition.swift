@@ -13,31 +13,45 @@ public struct LoanCondition: Identifiable {
     let ratePerYear: Decimal // 0.01 = 1%
     let numOfPayment: Int // 1 year loan -> 12 times
 
-    var onePaymentAmount: Decimal?
-
     let frequency: PaymentDateFrequency
-    let startDate: Date? // nil = not decided
+    let startDate: Date // not first pay, contract start day
+    let calendar: Calendar
 
     public init(id: UUID = UUID(),
                 loanAmount: Decimal, ratePerYear: Decimal, numOfPayment: Int,
-                onePaymentAmount: Decimal? = nil,
                 frequency: PaymentDateFrequency,
-                startDate: Date? = nil) {
+                startDate: Date = Date(),
+                calendar: Calendar = Calendar.current) {
         self.id = id
         self.loanAmount = loanAmount
         self.ratePerYear = ratePerYear
         self.numOfPayment = numOfPayment
-        self.onePaymentAmount = onePaymentAmount
         self.frequency = frequency
         self.startDate = startDate
+        self.calendar = calendar
     }
     
-    func calcOnePaymentAmount() -> Decimal {
+    var onePaymentAmount: Decimal {
         let monthlyRate = ratePerYear / 12
         let p = pow(1 + monthlyRate, numOfPayment)
-        return loanAmount * monthlyRate * p / (p - 1.0)
+        let amount = loanAmount * monthlyRate * p / (p - 1.0)
+        return amount.rounding(.down)
     }
     
+    var ratePerMonth: Decimal {
+        ratePerYear / 12
+    }
+    
+    public enum CalcMethod {
+        //case day   // rate/365 * days
+        case month // rate/ 12 * months
+    }
+    
+    func calcInterest(lastPay: LoanPayment, nextDate: Date, way: CalcMethod = .month, rounding mode: NSDecimalNumberHandler) -> Decimal {
+        guard let length = ((lastPay.date)..<(nextDate)).months(self.calendar) else { fatalError("error in calc") }
+        let amount = lastPay.balanceAfterThisPayment * ratePerMonth * Decimal(length)
+        return amount.rounding(mode)
+    }
 }
 
 extension Decimal {
