@@ -53,30 +53,31 @@ final class LoanCalc_Tests: XCTestCase {
         ])
     }
 
-    func test_paymentDates_matches_twiceAMonth_1Year() throws {
-        typealias sut = LoanCalc
-
-        let jan1 = Calendar.date(2024, 1, 1)
-        let match1 = DateComponents(day: 5, hour: 0, minute: 0, second: 0)
-        let match2 = DateComponents(day: 15, hour: 0, minute: 0, second: 0)
-        let freq = PaymentDateFrequency(matchComponent: [match1, match2], adjustment: .noAdjustment)
-
-        let payDates = sut.paymentDates(start: jan1, num: 12, frequency: freq).map({$0})
-        XCTAssertEqual(payDates, [
-            Calendar.date(2024, 1, 5),
-            Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 15))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 5))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 15))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 5))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 15))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 4, day: 5))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 4, day: 15))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 5, day: 5))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 5, day: 15))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 6, day: 5))!,
-            Calendar.current.date(from: DateComponents(year: 2024, month: 6, day: 15))!,
-        ])
-    }
+    // currently payments more than once in month is not supported
+//    func test_paymentDates_matches_twiceAMonth_1Year() throws {
+//        typealias sut = LoanCalc
+//
+//        let jan1 = Calendar.date(2024, 1, 1)
+//        let match1 = DateComponents(day: 5, hour: 0, minute: 0, second: 0)
+//        let match2 = DateComponents(day: 15, hour: 0, minute: 0, second: 0)
+//        let freq = PaymentDateFrequency(matchComponent: [match1, match2], adjustment: .noAdjustment, ratio: 0.5)
+//
+//        let payDates = sut.paymentDates(start: jan1, num: 12, frequency: freq).map({$0})
+//        XCTAssertEqual(payDates, [
+//            Calendar.date(2024, 1, 5),
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 15))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 5))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 15))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 5))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 15))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 4, day: 5))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 4, day: 15))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 5, day: 5))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 5, day: 15))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 6, day: 5))!,
+//            Calendar.current.date(from: DateComponents(year: 2024, month: 6, day: 15))!,
+//        ])
+//    }
 
     func test_paymentDates_matches_twiceAYear_2Year() throws {
         typealias sut = LoanCalc
@@ -97,13 +98,12 @@ final class LoanCalc_Tests: XCTestCase {
         typealias sut = LoanCalc
         let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
 
-        let condition = LoanCondition(title: "example", loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24,
+        let condition = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24,
                                       frequency: .monthly(at: 5, .noAdjustment), startDate: jan1)
 
         let results = sut.payments(firstPrincipal: Decimal(40481), condition: condition)
         
         XCTAssertEqual(results.count, 24)
-        print(results)
         
         XCTAssertEqual(results[0..<24], [
             LoanPayment(date: Calendar.date(2024, 1, 5), principal: 40481, interest: 2500, balanceAfterThisPayment: 959519),
@@ -133,23 +133,29 @@ final class LoanCalc_Tests: XCTestCase {
             ])
     }
     
-//    func test_payments_twiceAYear() throws {
-//        typealias sut = LoanCalc
-//        let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
-//
-//        let condition = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 4,
-//                                      frequency: .twiceAYear(date: .exact(6, 5)), startDate: jan1)
-//
-//        let results = sut.payments(firstPrincipal: Decimal(2444444), condition: condition)
-//        
-//        XCTAssertEqual(results.count, 4)
-//        print(results)
-//        
-//        XCTAssertEqual(results[0..<24], [
-//            LoanPayment(date: Calendar.date(2024, 6, 5), principal: 244444, interest: 15000, balanceAfterThisPayment: 755556),
-//            LoanPayment(date: Calendar.date(2024,12, 5), principal: 248111, interest: 11333, balanceAfterThisPayment: 507445),
-//            LoanPayment(date: Calendar.date(2025, 6, 5), principal: 259444, interest:  7611, balanceAfterThisPayment: 255612),
-//            LoanPayment(date: Calendar.date(2025,12, 5), principal: 259446, interest:  3834, balanceAfterThisPayment:      0),
-//            ])
-//    }
+    func test_payments_twiceAYear() throws {
+        typealias sut = LoanCalc
+        let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
+
+        let condition = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 10,
+                                      frequency: .twiceAYear(at: 1, 5, .noAdjustment), startDate: jan1)
+
+        let results = sut.payments(firstPrincipal: Decimal(93434), condition: condition)
+        
+        XCTAssertEqual(results.count, 10)
+        print(results)
+        
+        XCTAssertEqual(results[0..<10], [
+            LoanPayment(date: Calendar.date(2024, 1, 5), principal: 93434, interest: 15000, balanceAfterThisPayment: 906566),
+            LoanPayment(date: Calendar.date(2024, 7, 5), principal: 94836, interest: 13598, balanceAfterThisPayment: 811730),
+            LoanPayment(date: Calendar.date(2025, 1, 5), principal: 96259, interest: 12175, balanceAfterThisPayment: 715471),
+            LoanPayment(date: Calendar.date(2025, 7, 5), principal: 97702, interest: 10732, balanceAfterThisPayment: 617769),
+            LoanPayment(date: Calendar.date(2026, 1, 5), principal: 99168, interest:  9266, balanceAfterThisPayment: 518601),
+            LoanPayment(date: Calendar.date(2026, 7, 5), principal:100655, interest:  7779, balanceAfterThisPayment: 417946),
+            LoanPayment(date: Calendar.date(2027, 1, 5), principal:102165, interest:  6269, balanceAfterThisPayment: 315781),
+            LoanPayment(date: Calendar.date(2027, 7, 5), principal:103698, interest:  4736, balanceAfterThisPayment: 212083),
+            LoanPayment(date: Calendar.date(2028, 1, 5), principal:105253, interest:  3181, balanceAfterThisPayment: 106830),
+            LoanPayment(date: Calendar.date(2028, 7, 5), principal:106830, interest:  1602, balanceAfterThisPayment:      0),
+        ])
+    }
 }

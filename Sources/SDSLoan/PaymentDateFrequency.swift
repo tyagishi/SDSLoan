@@ -12,15 +12,18 @@ public enum PayDateAdjustment: String, RawRepresentable, Codable, CaseIterable, 
     case noAdjustment, nextWorkingDay, prevWorkingDay
 }
 
-public struct PaymentDateFrequency: Sendable, Codable {
-    let matchComponent: [DateComponents]
+public struct PaymentDateFrequency: Sendable, Codable, Hashable {
+    let matchComponent: [DateComponents] // components should be spread equally ok: 1,3,5,7,9,11   ng: 1,2,3,8,9 (in month)
     let adjustment: PayDateAdjustment
     let calendar: Calendar
     
-    public init(matchComponent: [DateComponents], adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current) {
+    public let onePaymentMonthValue: Int
+    
+    public init(matchComponent: [DateComponents], adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current, ratio: Int) {
         self.matchComponent = matchComponent
         self.adjustment = adjustment
         self.calendar = calendar
+        self.onePaymentMonthValue = ratio
     }
 
     public func nextDate(from fromDate: Date) -> Date? {
@@ -41,12 +44,12 @@ public struct PaymentDateFrequency: Sendable, Codable {
 extension PaymentDateFrequency {
     public static func monthly(at day: Int,_ adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current) -> PaymentDateFrequency {
         let component = DateComponents(day: day, hour: 0, minute: 0, second: 0)
-        return PaymentDateFrequency(matchComponent: [component], adjustment: adjustment, calendar: calendar)
+        return PaymentDateFrequency(matchComponent: [component], adjustment: adjustment, calendar: calendar, ratio: 1)
     }
     public static func twiceAYear(at month: Int,_ day: Int,_ adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current) -> PaymentDateFrequency {
         let component1 = DateComponents(month: month, day: day, hour: 0, minute: 0, second: 0)
         let anotherMonth = (month + 6) % 12
         let component2 = DateComponents(month: anotherMonth, day: day, hour: 0, minute: 0, second: 0)
-        return PaymentDateFrequency(matchComponent: [component1, component2], adjustment: adjustment, calendar: calendar)
+        return PaymentDateFrequency(matchComponent: [component1, component2], adjustment: adjustment, calendar: calendar, ratio: 6)
     }
 }

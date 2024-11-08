@@ -7,9 +7,12 @@
 
 import Foundation
 
-public struct LoanCondition: Identifiable, Codable {
+public struct LoanCondition: Identifiable, Codable, Hashable, Equatable {
+    public static func == (lhs: LoanCondition, rhs: LoanCondition) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     public var id = UUID()
-    public let title: String
     public let loanAmount: Decimal
     public let ratePerYear: Decimal // 0.01 = 1%
     public let numOfPayment: Int // 1 year loan -> 12 times
@@ -19,13 +22,11 @@ public struct LoanCondition: Identifiable, Codable {
     public let calendar: Calendar
 
     public init(id: UUID = UUID(),
-                title: String,
                 loanAmount: Decimal, ratePerYear: Decimal, numOfPayment: Int,
                 frequency: PaymentDateFrequency,
                 startDate: Date = Date(),
                 calendar: Calendar = Calendar.current) {
         self.id = id
-        self.title = title
         self.loanAmount = loanAmount
         self.ratePerYear = ratePerYear
         self.numOfPayment = numOfPayment
@@ -35,15 +36,20 @@ public struct LoanCondition: Identifiable, Codable {
     }
     
     public var onePaymentAmount: Decimal {
-        let monthlyRate = ratePerYear / 12
+        let monthlyRate = ratePerPayment
         let p = pow(1 + monthlyRate, numOfPayment)
         let amount = loanAmount * monthlyRate * p / (p - 1.0)
         return amount.rounding(.down)
     }
     
+    public var ratePerPayment: Decimal {
+        ratePerYear / 12 * Decimal(frequency.onePaymentMonthValue)
+    }
+
     public var ratePerMonth: Decimal {
         ratePerYear / 12
     }
+
     
     public var periodInYearMonth: (Int, Int) {
         return numOfPayment.quotientAndRemainder(dividingBy: 12)
