@@ -15,7 +15,7 @@ final class LoanCalc_Tests: XCTestCase {
 
         let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
 
-        XCTAssertEqual(Array(sut.paymentDates(start: jan1, num: 12, frequency: .monthly(at: 5, .noAdjustment))), [
+        XCTAssertEqual(sut.paymentDates(start: jan1, num: 12, frequency: .monthly(at: 5, .noAdjustment)), [
             Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 5))!,
             Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 5))!,
             Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 5))!,
@@ -37,7 +37,7 @@ final class LoanCalc_Tests: XCTestCase {
         let jan1 = Calendar.date(2024, 1, 1)
         let freq = PaymentDateFrequency.monthly(at: 5, .noAdjustment)
 
-        XCTAssertEqual(Array(sut.paymentDates(start: jan1, num: 12, frequency: freq)), [
+        XCTAssertEqual(sut.paymentDates(start: jan1, num: 12, frequency: freq), [
             Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 5))!,
             Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 5))!,
             Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 5))!,
