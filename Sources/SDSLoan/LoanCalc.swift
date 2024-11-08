@@ -53,9 +53,9 @@ class LoanCalc {
                 principal = lastPay.balanceAfterThisPayment
                 balance = 0
             }
-            let nextPay = LoanPayment(date: current, principal: principal, interest: interest, balanceAfterThisPayment: balance)
-            payments.append(nextPay)
-            lastPay = nextPay
+            let currentPay = LoanPayment(date: current, principal: principal, interest: interest, balanceAfterThisPayment: balance)
+            payments.append(currentPay)
+            lastPay = currentPay
         }
         
         return payments
