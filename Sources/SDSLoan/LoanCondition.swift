@@ -7,22 +7,25 @@
 
 import Foundation
 
-public struct LoanCondition: Identifiable {
+public struct LoanCondition: Identifiable, Codable {
     public var id = UUID()
-    let loanAmount: Decimal
-    let ratePerYear: Decimal // 0.01 = 1%
-    let numOfPayment: Int // 1 year loan -> 12 times
+    public let title: String
+    public let loanAmount: Decimal
+    public let ratePerYear: Decimal // 0.01 = 1%
+    public let numOfPayment: Int // 1 year loan -> 12 times
 
-    let frequency: PaymentDateFrequency
-    let startDate: Date // not first pay, contract start day
-    let calendar: Calendar
+    public let frequency: PaymentDateFrequency
+    public let startDate: Date // not first pay, contract start day
+    public let calendar: Calendar
 
     public init(id: UUID = UUID(),
+                title: String,
                 loanAmount: Decimal, ratePerYear: Decimal, numOfPayment: Int,
                 frequency: PaymentDateFrequency,
                 startDate: Date = Date(),
                 calendar: Calendar = Calendar.current) {
         self.id = id
+        self.title = title
         self.loanAmount = loanAmount
         self.ratePerYear = ratePerYear
         self.numOfPayment = numOfPayment
@@ -31,15 +34,19 @@ public struct LoanCondition: Identifiable {
         self.calendar = calendar
     }
     
-    var onePaymentAmount: Decimal {
+    public var onePaymentAmount: Decimal {
         let monthlyRate = ratePerYear / 12
         let p = pow(1 + monthlyRate, numOfPayment)
         let amount = loanAmount * monthlyRate * p / (p - 1.0)
         return amount.rounding(.down)
     }
     
-    var ratePerMonth: Decimal {
+    public var ratePerMonth: Decimal {
         ratePerYear / 12
+    }
+    
+    public var periodInYearMonth: (Int, Int) {
+        return numOfPayment.quotientAndRemainder(dividingBy: 12)
     }
     
     public enum CalcMethod {
@@ -55,13 +62,13 @@ public struct LoanCondition: Identifiable {
 }
 
 extension Decimal {
-    func rounding(_ behavior: NSDecimalNumberHandler) -> Decimal {
+    public func rounding(_ behavior: NSDecimalNumberHandler) -> Decimal {
         ((self as NSDecimalNumber).rounding(accordingToBehavior: behavior)) as Decimal
     }
 }
 
 extension NSDecimalNumberHandler {
-    convenience init(roundingMode: NSDecimalNumber.RoundingMode, scale: Int16) {
+    public convenience init(roundingMode: NSDecimalNumber.RoundingMode, scale: Int16) {
         self.init(roundingMode: roundingMode, scale: scale,
                   raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: true)
     }

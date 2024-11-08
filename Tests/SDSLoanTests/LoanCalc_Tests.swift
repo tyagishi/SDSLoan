@@ -97,7 +97,7 @@ final class LoanCalc_Tests: XCTestCase {
         typealias sut = LoanCalc
         let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
 
-        let condition = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24,
+        let condition = LoanCondition(title: "example", loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24,
                                       frequency: .monthly(at: 5, .noAdjustment), startDate: jan1)
 
         let results = sut.payments(firstPrincipal: Decimal(40481), condition: condition)

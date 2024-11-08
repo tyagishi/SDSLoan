@@ -12,7 +12,7 @@ public enum PayDateAdjustment: String, RawRepresentable, Codable, CaseIterable, 
     case noAdjustment, nextWorkingDay, prevWorkingDay
 }
 
-public struct PaymentDateFrequency: Sendable {
+public struct PaymentDateFrequency: Sendable, Codable {
     let matchComponent: [DateComponents]
     let adjustment: PayDateAdjustment
     let calendar: Calendar
