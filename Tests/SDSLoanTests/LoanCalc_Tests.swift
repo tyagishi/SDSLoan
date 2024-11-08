@@ -32,6 +32,52 @@ final class LoanCalc_Tests: XCTestCase {
         ])
     }
     
+    func test_paymentDates_matches_1Year() throws {
+        typealias sut = LoanCalc
+
+        let cal = Calendar(identifier: .gregorian)
+        let match = DateComponents(day: 5, hour: 0, minute: 0, second: 0)
+        let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
+
+        XCTAssertEqual(Array(sut.paymentDates(start: jan1, num: 12, matches: [match], adjust: .noAdjustment, in: cal)), [
+            Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 4, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 5, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 6, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 7, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 8, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 9, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month:10, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month:11, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month:12, day: 5))!,
+        ])
+    }
+
+    func test_paymentDates_matches_twiceAMonth_1Year() throws {
+        typealias sut = LoanCalc
+
+        let cal = Calendar(identifier: .gregorian)
+        let match1 = DateComponents(day: 5, hour: 0, minute: 0, second: 0)
+        let match2 = DateComponents(day: 15, hour: 0, minute: 0, second: 0)
+        let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
+
+        XCTAssertEqual(Array(sut.paymentDates(start: jan1, num: 12, matches: [match1, match2], adjust: .noAdjustment, in: cal)), [
+            Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 15))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 2, day: 15))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 15))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 4, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 4, day: 15))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 5, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 5, day: 15))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 6, day: 5))!,
+            Calendar.current.date(from: DateComponents(year: 2024, month: 6, day: 15))!,
+        ])
+    }
     func test_payments_1Year() throws {
         typealias sut = LoanCalc
         let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!

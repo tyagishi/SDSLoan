@@ -30,6 +30,15 @@ public struct PayDay: Sendable {
     public static func nwd(_ day: Int, calendar: Calendar = Calendar.current) -> PayDay {
         .init(day, .nextWorkingDay, calendar)
     }
+    
+    public func nextDate(from: Date) -> Date {
+        let matchComponent = DateComponents(day: day, hour: 0, minute: 0, second: 0)
+
+        guard let date = calendar.nextDate(after: from.advanced(by: 1), matching: matchComponent, matchingPolicy: .nextTime) else {
+            fatalError("failed to calc date")
+        }
+        return date
+    }
 }
 
 public struct PayMonthDay: Sendable {

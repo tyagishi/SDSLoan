@@ -34,6 +34,27 @@ class LoanCalc {
         return retDates
     }
     
+    public static func paymentDates(start startDate: Date, num: Int, matches: [DateComponents], adjust: PayDateAdjustment, in calendar: Calendar) -> any Sequence<Date> {
+        var retDates: Set<Date> = []
+        
+        for match in matches {
+            var count = 0
+            Calendar.current.enumerateDates(startingAfter: startDate,
+                                            matching: match,
+                                            matchingPolicy: .strict) { result, _, stop in
+                guard let newDate = result else { return }
+                retDates.insert(newDate)
+                count += 1
+                guard count < num else { stop = true; return }
+            }
+        }
+        guard retDates.count >= num else { fatalError("too few dates") }
+        let sortedDates = retDates.map({ calendar.adjustDate($0, adjust: adjust) }).sorted()
+        return Array(sortedDates[0..<num])
+    }
+    
+
+    
     public static func payments(firstPrincipal: Decimal, condition: LoanCondition) -> [LoanPayment] {
         var payments: [LoanPayment] = []
         
