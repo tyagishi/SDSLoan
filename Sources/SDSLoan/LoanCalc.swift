@@ -30,7 +30,7 @@ class LoanCalc {
         var payments: [LoanPayment] = []
         
         let pdates = paymentDates(start: condition.startDate, num: condition.numOfPayment,
-                                  frequency: condition.frequency).map({ $0 })
+                                  frequency: condition.frequency)
         guard !pdates.isEmpty else { return []}
         
         // first
