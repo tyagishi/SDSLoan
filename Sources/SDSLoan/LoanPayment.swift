@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct LoanPayment: Equatable, Sendable, Codable{
+public struct LoanPayment: Identifiable, Equatable, Sendable, Codable{
+    public var id: UUID = UUID()
     public let date: Date // 0:00
     public let principal: Decimal
     public let interest: Decimal
