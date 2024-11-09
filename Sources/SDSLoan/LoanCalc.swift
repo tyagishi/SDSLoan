@@ -9,7 +9,7 @@ import Foundation
 import SDSFoundationExtension
 import SDSSwiftExtension
 
-class LoanCalc {
+public class LoanCalc {
     public static func paymentDates(start startDate: Date, num: Int, frequency: PaymentDateFrequency) -> [Date] {
         var retDates: [Date] = []
         
