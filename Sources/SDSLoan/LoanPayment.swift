@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct LoanPayment: Equatable{
+public struct LoanPayment: Equatable, Sendable, Codable{
     public let date: Date // 0:00
     public let principal: Decimal
     public let interest: Decimal

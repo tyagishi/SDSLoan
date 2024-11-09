@@ -9,13 +9,17 @@ import Foundation
 
 public struct LoanCondition: Identifiable, Codable, Hashable, Equatable {
     public static func == (lhs: LoanCondition, rhs: LoanCondition) -> Bool {
-        lhs.id == rhs.id
+        lhs.loanAmount == rhs.loanAmount &&
+        lhs.ratePerYear == rhs.ratePerYear &&
+        lhs.numOfPayment == rhs.numOfPayment &&
+        lhs.frequency == rhs.frequency &&
+        lhs.startDate == rhs.startDate
     }
     
     public var id = UUID()
-    public let loanAmount: Decimal
-    public let ratePerYear: Decimal // 0.01 = 1%
-    public let numOfPayment: Int // 1 year loan -> 12 times
+    public var loanAmount: Decimal
+    public var ratePerYear: Decimal // 0.01 = 1%
+    public var numOfPayment: Int // 1 year loan -> 12 times
 
     public let frequency: PaymentDateFrequency
     public let startDate: Date // not first pay, contract start day
@@ -65,6 +69,12 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable {
         let amount = lastPay.balanceAfterThisPayment * ratePerMonth * Decimal(length)
         return amount.rounding(mode)
     }
+}
+
+extension LoanCondition {
+    @MainActor
+    public static let example = LoanCondition(loanAmount: 10_000_000, ratePerYear: 0.0315, numOfPayment: 120,
+                                              frequency: .monthly(at: 10, .noAdjustment))
 }
 
 extension Decimal {
