@@ -18,4 +18,14 @@ extension Array where Element == LoanPayment {
     func payment(at date: Date) -> LoanPayment? {
         self.first(where: { $0.date == date })
     }
+    
+    func paymentSum() -> (total: Decimal, principal: Decimal, interest: Decimal) {
+        var principal = Decimal(0)
+        var interest = Decimal(0)
+        self.forEach({
+            principal += $0.principal
+            interest += $0.interest
+        })
+        return (principal+interest, principal, interest)
+    }
 }

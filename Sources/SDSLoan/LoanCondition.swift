@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct LoanCondition: Identifiable, Codable, Hashable, Equatable {
+public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendable {
     public static func == (lhs: LoanCondition, rhs: LoanCondition) -> Bool {
         lhs.loanAmount == rhs.loanAmount &&
         lhs.ratePerYear == rhs.ratePerYear &&
@@ -72,7 +72,6 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable {
 }
 
 extension LoanCondition {
-    @MainActor
     public static let example = LoanCondition(loanAmount: 10_000_000, ratePerYear: 0.0315, numOfPayment: 120,
                                               frequency: .monthly(at: 10, .noAdjustment))
 }
