@@ -73,7 +73,8 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
 
 extension LoanCondition {
     public static let example = LoanCondition(loanAmount: 10_000_000, ratePerYear: 0.0315, numOfPayment: 120,
-                                              frequency: .monthly(at: 10, .noAdjustment))
+                                              frequency: .monthly(at: 10, .noAdjustment),
+                                              startDate: Calendar.date(2025, 1, 1))
 }
 
 extension Decimal {
