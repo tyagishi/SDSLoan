@@ -15,11 +15,11 @@ public struct LoanPayment: Equatable, Sendable, Codable{
 }
 
 extension Array where Element == LoanPayment {
-    func payment(at date: Date) -> LoanPayment? {
+    public func payment(at date: Date) -> LoanPayment? {
         self.first(where: { $0.date == date })
     }
     
-    func paymentSum() -> (total: Decimal, principal: Decimal, interest: Decimal) {
+    public func paymentSum() -> (total: Decimal, principal: Decimal, interest: Decimal) {
         var principal = Decimal(0)
         var interest = Decimal(0)
         self.forEach({
