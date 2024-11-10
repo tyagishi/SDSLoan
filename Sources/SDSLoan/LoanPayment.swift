@@ -15,6 +15,24 @@ public struct LoanPayment: Identifiable, Equatable, Sendable, Codable{
     public let balanceAfterThisPayment: Decimal
 }
 
+public struct PaidAmount: Identifiable, Equatable, Sendable, Codable {
+    public var id: UUID
+    public let date: Date
+    public let principal: Decimal
+    public let interest: Decimal
+    public let total: Decimal // incl. this payment
+
+    public init(id: UUID = UUID(), date: Date, principal: Decimal, interest: Decimal) {
+        self.id = id
+        self.date = date
+        self.principal = principal
+        self.interest = interest
+        self.total = principal + interest
+    }
+    
+    public static let zero = PaidAmount(date: Date.distantPast, principal: 0, interest: 0)
+}
+
 extension Array where Element == LoanPayment {
     public func payment(at date: Date) -> LoanPayment? {
         self.first(where: { $0.date == date })
