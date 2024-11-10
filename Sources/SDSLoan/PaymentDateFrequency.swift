@@ -25,6 +25,12 @@ public struct PaymentDateFrequency: Sendable, Codable, Hashable {
         self.calendar = calendar
         self.onePaymentMonthValue = ratio
     }
+    
+    public var firstPayDay: Int {
+        guard let firstMatch = matchComponent.first,
+              let firstDay = firstMatch.day else { fatalError("invalid matchComponent") }
+        return firstDay
+    }
 
     public func nextDate(from fromDate: Date) -> Date? {
         var dates: Set<Date> = Set()

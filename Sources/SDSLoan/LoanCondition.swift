@@ -21,8 +21,8 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
     public var ratePerYear: Decimal // 0.01 = 1%
     public var numOfPayment: Int // 1 year loan -> 12 times
 
-    public let frequency: PaymentDateFrequency
-    public let startDate: Date // not first pay, contract start day
+    public var frequency: PaymentDateFrequency
+    public var startDate: Date // not first pay, contract start day
     public let calendar: Calendar
 
     public init(id: UUID = UUID(),
