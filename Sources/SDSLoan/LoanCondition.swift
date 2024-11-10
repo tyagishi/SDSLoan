@@ -17,16 +17,22 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
     }
     
     public var id = UUID()
-    public var loanAmount: Decimal
-    public var ratePerYear: Decimal // 0.01 = 1%
-    public var numOfPayment: Int // 1 year loan -> 12 times
-
-    public var frequency: PaymentDateFrequency
     public var startDate: Date // not first pay, contract start day
+    public var ratePerYear: Decimal // 0.01 = 1%
+
+    public var loanAmount: Decimal
+    public var numOfPayment: Int // 1 year loan -> 12 times
+    public var frequency: PaymentDateFrequency
+
+//    public var bonusLoanAmount: Decimal
+//    public var bonusFrequency: PaymentDateFrequency
+
     public let calendar: Calendar
 
     public init(id: UUID = UUID(),
-                loanAmount: Decimal, ratePerYear: Decimal, numOfPayment: Int,
+                ratePerYear: Decimal,
+                loanAmount: Decimal,
+                numOfPayment: Int,
                 frequency: PaymentDateFrequency,
                 startDate: Date = Date(),
                 calendar: Calendar = Calendar.current) {
@@ -80,11 +86,11 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
 }
 
 extension LoanCondition {
-    public static let example = LoanCondition(loanAmount: 10_000_000, ratePerYear: 0.0315, numOfPayment: 120,
-                                              frequency: .monthly(at: 10, .noAdjustment),
+    public static let example = LoanCondition(ratePerYear: 0.0315,
+                                              loanAmount: 10_000_000, numOfPayment: 120, frequency: .monthly(at: 10, .noAdjustment),
                                               startDate: Calendar.date(2025, 1, 1))
-    public static let bonusExample = LoanCondition(loanAmount: 10_000_000, ratePerYear: 0.0315, numOfPayment: 20,
-                                                   frequency: .twiceAYear(at: 1, 10, .noAdjustment),
+    public static let bonusExample = LoanCondition(ratePerYear: 0.0315,
+                                                   loanAmount: 10_000_000, numOfPayment: 20, frequency: .twiceAYear(at: 1, 10, .noAdjustment),
                                                    startDate: Calendar.date(2025, 1, 1))
 }
 

@@ -12,13 +12,19 @@ public struct LoanPayment: Identifiable, Equatable, Sendable, Codable{
         lhs.date == rhs.date &&
         lhs.principal == rhs.principal &&
         lhs.interest == rhs.interest &&
-        lhs.balanceAfterThisPayment == rhs.balanceAfterThisPayment
+        lhs.balanceAfterThisPayment == rhs.balanceAfterThisPayment 
+//        lhs.bonusPrincipal == rhs.bonusPrincipal &&
+//        lhs.bonusInterest == rhs.bonusInterest &&
+//        lhs.bonusBalanceAfterThisPayment == rhs.bonusBalanceAfterThisPayment
     }
     public var id: UUID = UUID()
     public let date: Date // 0:00
     public let principal: Decimal
     public let interest: Decimal
     public let balanceAfterThisPayment: Decimal
+//    public let bonusPrincipal: Decimal?
+//    public let bonusInterest: Decimal?
+//    public let bonusBalanceAfterThisPayment: Decimal?
 }
 
 public struct PaidAmount: Identifiable, Equatable, Sendable, Codable {

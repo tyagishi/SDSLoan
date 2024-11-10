@@ -98,8 +98,8 @@ final class LoanCalc_Tests: XCTestCase {
         typealias sut = LoanCalc
         let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
 
-        let condition = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 24,
-                                      frequency: .monthly(at: 5, .noAdjustment), startDate: jan1)
+        let condition = LoanCondition(ratePerYear: 0.03,
+                                      loanAmount: 1_000_000, numOfPayment: 24, frequency: .monthly(at: 5, .noAdjustment), startDate: jan1)
 
         let results = sut.payments(firstPrincipal: Decimal(40481), condition: condition)
         
@@ -137,8 +137,8 @@ final class LoanCalc_Tests: XCTestCase {
         typealias sut = LoanCalc
         let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
 
-        let condition = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 10,
-                                      frequency: .twiceAYear(at: 1, 5, .noAdjustment), startDate: jan1)
+        let condition = LoanCondition(ratePerYear: 0.03,
+                                      loanAmount: 1_000_000, numOfPayment: 10, frequency: .twiceAYear(at: 1, 5, .noAdjustment), startDate: jan1)
 
         let results = sut.payments(firstPrincipal: Decimal(93434), condition: condition)
         
@@ -163,14 +163,14 @@ final class LoanCalc_Tests: XCTestCase {
         typealias sut = LoanCalc
         let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
 
-        let condition = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 10,
-                                      frequency: .monthly(at: 10, .noAdjustment), startDate: jan1)
+        let condition = LoanCondition(ratePerYear: 0.03,
+                                      loanAmount: 1_000_000, numOfPayment: 10, frequency: .monthly(at: 10, .noAdjustment), startDate: jan1)
 
         let results = sut.payments(condition: condition)
         results.debugPrint()
         XCTAssertEqual(results.count, 10)
         
-        XCTAssertEqual(results[0..<5], [
+        XCTAssertEqual(results[0..<10], [
             LoanPayment(date: Calendar.date(2024, 1,10), principal: 100641, interest:  739, balanceAfterThisPayment: 899359),
             LoanPayment(date: Calendar.date(2024, 2,10), principal:  99132, interest: 2248, balanceAfterThisPayment: 800227),
             LoanPayment(date: Calendar.date(2024, 3,10), principal:  99380, interest: 2000, balanceAfterThisPayment: 700847),
