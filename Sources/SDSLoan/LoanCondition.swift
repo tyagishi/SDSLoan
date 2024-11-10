@@ -69,6 +69,14 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
         let amount = lastPay.balanceAfterThisPayment * ratePerMonth * Decimal(length)
         return amount.rounding(mode)
     }
+    
+    func calcInteresetPerDays(startDate: Date, nextDate: Date, rounding mode: NSDecimalNumberHandler) -> Decimal {
+        // 片端入れのみ対応
+        guard let length = (startDate..<nextDate).days(self.calendar) else { fatalError("err in day calc") }
+        let interest = loanAmount * ratePerYear / 365 * Decimal(length)
+        return interest.rounding(mode)
+    }
+    
 }
 
 extension LoanCondition {

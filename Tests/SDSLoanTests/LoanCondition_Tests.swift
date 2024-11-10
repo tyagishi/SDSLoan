@@ -57,5 +57,15 @@ final class LoanCondition_Tests: XCTestCase {
         let amount = sut.calcInterest(lastPay: lastPay, nextDate: jul5, rounding: .down)
         XCTAssertEqual(amount, 13598)
     }
+    
+    func test_calcInteresetPerDays() async throws {
+        let jan1 = Calendar.date(2024, 1, 1)
+        let sut = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 10,
+                                frequency: .monthly(at: 5, .noAdjustment), startDate: jan1)
+        let jan10 = Calendar.date(2024, 1, 10)
+
+        let amount = sut.calcInteresetPerDays(startDate: jan1, nextDate: jan10, rounding: .down)
+        XCTAssertEqual(amount, 739)
+    }
 
 }

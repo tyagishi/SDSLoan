@@ -158,4 +158,29 @@ final class LoanCalc_Tests: XCTestCase {
             LoanPayment(date: Calendar.date(2028, 7, 5), principal:106830, interest:  1602, balanceAfterThisPayment:      0),
         ])
     }
+    
+    func test_payments_halfYear() throws {
+        typealias sut = LoanCalc
+        let jan1 = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1))!
+
+        let condition = LoanCondition(loanAmount: 1_000_000, ratePerYear: 0.03, numOfPayment: 10,
+                                      frequency: .monthly(at: 10, .noAdjustment), startDate: jan1)
+
+        let results = sut.payments(condition: condition)
+        results.debugPrint()
+        XCTAssertEqual(results.count, 10)
+        
+        XCTAssertEqual(results[0..<5], [
+            LoanPayment(date: Calendar.date(2024, 1,10), principal: 100641, interest:  739, balanceAfterThisPayment: 899359),
+            LoanPayment(date: Calendar.date(2024, 2,10), principal:  99132, interest: 2248, balanceAfterThisPayment: 800227),
+            LoanPayment(date: Calendar.date(2024, 3,10), principal:  99380, interest: 2000, balanceAfterThisPayment: 700847),
+            LoanPayment(date: Calendar.date(2024, 4,10), principal:  99628, interest: 1752, balanceAfterThisPayment: 601219),
+            LoanPayment(date: Calendar.date(2024, 5,10), principal:  99877, interest: 1503, balanceAfterThisPayment: 501342),
+            LoanPayment(date: Calendar.date(2024, 6,10), principal: 100127, interest: 1253, balanceAfterThisPayment: 401215),
+            LoanPayment(date: Calendar.date(2024, 7,10), principal: 100377, interest: 1003, balanceAfterThisPayment: 300838),
+            LoanPayment(date: Calendar.date(2024, 8,10), principal: 100628, interest:  752, balanceAfterThisPayment: 200210),
+            LoanPayment(date: Calendar.date(2024, 9,10), principal: 100880, interest:  500, balanceAfterThisPayment:  99330),
+            LoanPayment(date: Calendar.date(2024,10,10), principal:  99330, interest:  248, balanceAfterThisPayment: 0),
+            ])
+    }
 }

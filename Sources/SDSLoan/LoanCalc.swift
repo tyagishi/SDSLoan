@@ -26,6 +26,15 @@ public class LoanCalc {
         return retDates
     }
     
+    public static func payments(condition: LoanCondition) -> [LoanPayment] {
+        let pDates = paymentDates(start: condition.startDate, num: condition.numOfPayment, frequency: condition.frequency)
+        guard let firstDate = pDates.first else { return [] }
+        
+        let firstInterest = condition.calcInteresetPerDays(startDate: condition.startDate, nextDate: firstDate, rounding: .down)
+        let firstPrincipal = condition.onePaymentAmount - firstInterest
+        return Self.payments(firstPrincipal: firstPrincipal, condition: condition)
+    }
+    
     public static func payments(firstPayDay: Date, condition: LoanCondition) -> [LoanPayment] {
         let dummyPay = LoanPayment(date: condition.startDate, principal: 0, interest: 0, balanceAfterThisPayment: condition.loanAmount)
         let firstInterest = condition.calcInterest(lastPay: dummyPay, nextDate: firstPayDay, rounding: .down)

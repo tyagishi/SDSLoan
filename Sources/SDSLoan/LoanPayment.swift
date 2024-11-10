@@ -8,6 +8,12 @@
 import Foundation
 
 public struct LoanPayment: Identifiable, Equatable, Sendable, Codable{
+    public static func == (lhs: LoanPayment, rhs: LoanPayment) -> Bool {
+        lhs.date == rhs.date &&
+        lhs.principal == rhs.principal &&
+        lhs.interest == rhs.interest &&
+        lhs.balanceAfterThisPayment == rhs.balanceAfterThisPayment
+    }
     public var id: UUID = UUID()
     public let date: Date // 0:00
     public let principal: Decimal
@@ -46,5 +52,11 @@ extension Array where Element == LoanPayment {
             interest += $0.interest
         })
         return (principal+interest, principal, interest)
+    }
+    
+    public func debugPrint() {
+        forEach({
+            print("\($0.date), \($0.principal), \($0.interest), \($0.balanceAfterThisPayment)")
+        })
     }
 }
