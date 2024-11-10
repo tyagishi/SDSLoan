@@ -32,6 +32,13 @@ public struct PaymentDateFrequency: Sendable, Codable, Hashable {
         return firstDay
     }
 
+    public var twicePayMonthAYear: MonthPair {
+        guard matchComponent.count == 2,
+              let firstMonth = matchComponent[0].month,
+              let secondMonth = matchComponent[1].month else { fatalError("invalid matchComponent") }
+        return MonthPair(firstMonth, secondMonth)
+    }
+    
     public func nextDate(from fromDate: Date) -> Date? {
         var dates: Set<Date> = Set()
         for match in matchComponent {
@@ -44,6 +51,16 @@ public struct PaymentDateFrequency: Sendable, Codable, Hashable {
             }
         }
         return dates.sorted().first
+    }
+}
+
+public struct MonthPair: Hashable {
+    public var month1: Int
+    public var month2: Int
+    
+    public init(_ month1: Int,_ month2: Int) {
+        self.month1 = min(month1, month2)
+        self.month2 = max(month1, month2)
     }
 }
 
