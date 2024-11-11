@@ -69,7 +69,7 @@ extension PaymentDateFrequency {
         let component = DateComponents(day: day, hour: 0, minute: 0, second: 0)
         return PaymentDateFrequency(matchComponent: [component], adjustment: adjustment, calendar: calendar, ratio: 1)
     }
-    public static func twiceAYear(at month: Int,_ day: Int,_ adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current) -> PaymentDateFrequency {
+    public static func twiceAYearAt(month: Int,_ day: Int,_ adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current) -> PaymentDateFrequency {
         let component1 = DateComponents(month: month, day: day, hour: 0, minute: 0, second: 0)
         let anotherMonth = (month + 6) % 12
         let component2 = DateComponents(month: anotherMonth, day: day, hour: 0, minute: 0, second: 0)

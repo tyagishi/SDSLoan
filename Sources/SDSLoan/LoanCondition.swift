@@ -24,8 +24,8 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
     public var numOfPayment: Int // 1 year loan -> 12 times
     public var frequency: PaymentDateFrequency
 
-//    public var bonusLoanAmount: Decimal
-//    public var bonusFrequency: PaymentDateFrequency
+    public var bonusLoanAmount: Decimal?
+    public var bonusFrequency: PaymentDateFrequency?
 
     public let calendar: Calendar
 
@@ -34,15 +34,23 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
                 loanAmount: Decimal,
                 numOfPayment: Int,
                 frequency: PaymentDateFrequency,
+                bonusLoanAmount: Decimal? = nil,
+                bonusFrequency: PaymentDateFrequency? = nil,
                 startDate: Date = Date(),
                 calendar: Calendar = Calendar.current) {
         self.id = id
-        self.loanAmount = loanAmount
         self.ratePerYear = ratePerYear
+        self.loanAmount = loanAmount
         self.numOfPayment = numOfPayment
         self.frequency = frequency
+        self.bonusLoanAmount = bonusLoanAmount
+        self.bonusFrequency = bonusFrequency
         self.startDate = startDate
         self.calendar = calendar
+    }
+    
+    public var numOfBonusPayment: Int {
+        numOfPayment / 6
     }
     
     public var onePaymentAmount: Decimal {
@@ -51,7 +59,16 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
         let amount = loanAmount * monthlyRate * p / (p - 1.0)
         return amount.rounding(.down)
     }
-    
+
+    public var oneBonusPaymentAmount: Decimal {
+        guard let bonusLoanAmount = bonusLoanAmount,
+              let bonusFrequency = bonusFrequency else { fatalError("no info for bonus") }
+        let calcRateForOnePayment = ratePerPayment / Decimal(12) * Decimal(bonusFrequency.onePaymentMonthValue)
+        let p = pow(1 + calcRateForOnePayment, numOfBonusPayment)
+        let amount = bonusLoanAmount * calcRateForOnePayment * p / (p - 1.0)
+        return amount.rounding(.down)
+    }
+
     public var ratePerPayment: Decimal {
         ratePerYear / 12 * Decimal(frequency.onePaymentMonthValue)
     }
@@ -90,7 +107,7 @@ extension LoanCondition {
                                               loanAmount: 10_000_000, numOfPayment: 120, frequency: .monthly(at: 10, .noAdjustment),
                                               startDate: Calendar.date(2025, 1, 1))
     public static let bonusExample = LoanCondition(ratePerYear: 0.0315,
-                                                   loanAmount: 10_000_000, numOfPayment: 20, frequency: .twiceAYear(at: 1, 10, .noAdjustment),
+                                                   loanAmount: 10_000_000, numOfPayment: 20, frequency: .twiceAYearAt(month: 1, 10, .noAdjustment),
                                                    startDate: Calendar.date(2025, 1, 1))
 }
 

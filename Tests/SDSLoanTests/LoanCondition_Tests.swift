@@ -28,7 +28,7 @@ final class LoanCondition_Tests: XCTestCase {
 
     func test_onePaymentAmount_twiceAYear() async throws {
         let sut = LoanCondition(ratePerYear: 0.03,
-                                loanAmount: 1_000_000, numOfPayment: 10, frequency: .twiceAYear(at: 1, 5, .noAdjustment))
+                                loanAmount: 1_000_000, numOfPayment: 10, frequency: .twiceAYearAt(month: 1, 5, .noAdjustment))
         let amount = sut.onePaymentAmount
         XCTAssertEqual(amount, 108434)
     }
@@ -49,7 +49,7 @@ final class LoanCondition_Tests: XCTestCase {
     func test_calcInterest_halfYear() async throws {
         let jan1 = Calendar.date(2024, 1, 1)
         let sut = LoanCondition(ratePerYear: 0.03,
-                                loanAmount: 1_000_000, numOfPayment: 10, frequency: .twiceAYear(at: 1, 5, .noAdjustment), startDate: jan1)
+                                loanAmount: 1_000_000, numOfPayment: 10, frequency: .twiceAYearAt(month: 1, 5, .noAdjustment), startDate: jan1)
         let jan5 = Calendar.date(2024, 1, 5)
         let jul5 = Calendar.date(2024, 7, 5)
         let lastPay = LoanPayment(date: jan5, principal: 93434, interest: 15000, balanceAfterThisPayment: 906566)
@@ -68,4 +68,13 @@ final class LoanCondition_Tests: XCTestCase {
         XCTAssertEqual(amount, 739)
     }
 
+    // MARK: bonus
+    func test_oneBonusPaymentAmount_twiceAYear() async throws {
+        throw XCTSkip("not yet")
+        let sut = LoanCondition(ratePerYear: 0.03,
+                                loanAmount: 1_000_000, numOfPayment: 12*5, frequency: .monthly(at: 10, .noAdjustment),
+                                bonusLoanAmount: 1_000_000, bonusFrequency: .twiceAYearAt(month: 1, 10, .noAdjustment))
+        let amount = sut.oneBonusPaymentAmount
+        XCTAssertEqual(amount, 108434)
+    }
 }
