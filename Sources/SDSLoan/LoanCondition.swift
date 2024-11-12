@@ -60,10 +60,10 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
         return amount.rounding(.down)
     }
 
-    public var oneBonusPaymentAmount: Decimal {
+    public var oneBonusPaymentAmount: Decimal? {
         guard let bonusLoanAmount = bonusLoanAmount,
-              let bonusFrequency = bonusFrequency else { fatalError("no info for bonus") }
-        let calcRateForOnePayment = ratePerPayment / Decimal(12) * Decimal(bonusFrequency.onePaymentMonthValue)
+              let bonusFrequency = bonusFrequency else { return nil }
+        let calcRateForOnePayment = ratePerYear / Decimal(12) * Decimal(bonusFrequency.onePaymentMonthValue)
         let p = pow(1 + calcRateForOnePayment, numOfBonusPayment)
         let amount = bonusLoanAmount * calcRateForOnePayment * p / (p - 1.0)
         return amount.rounding(.down)

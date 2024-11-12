@@ -70,7 +70,6 @@ final class LoanCondition_Tests: XCTestCase {
 
     // MARK: bonus
     func test_oneBonusPaymentAmount_twiceAYear() async throws {
-        throw XCTSkip("not yet")
         let sut = LoanCondition(ratePerYear: 0.03,
                                 loanAmount: 1_000_000, numOfPayment: 12*5, frequency: .monthly(at: 10, .noAdjustment),
                                 bonusLoanAmount: 1_000_000, bonusFrequency: .twiceAYearAt(month: 1, 10, .noAdjustment))
