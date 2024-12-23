@@ -32,6 +32,12 @@ public struct PaymentDateFrequency: Sendable, Codable, Hashable {
         return firstDay
     }
 
+    public var firstPayMonth: Int {
+        guard let firstMatch = matchComponent.first,
+              let firstMonth = firstMatch.month else { fatalError("invalid matchComponent") }
+        return firstMonth
+    }
+    
     public var twicePayMonthAYear: MonthPair {
         guard matchComponent.count == 2,
               let firstMonth = matchComponent[0].month,
