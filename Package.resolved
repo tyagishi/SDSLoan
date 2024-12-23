@@ -1,0 +1,33 @@
+{
+  "originHash" : "c4017eb577a7a9b5459def7edae731359d2fc0df3de208e6e77d87356d6e070e",
+  "pins" : [
+    {
+      "identity" : "sdsfoundationextension",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyagishi/SDSFoundationExtension",
+      "state" : {
+        "revision" : "47c813e803f6c9e2f27e7c9eabf328979a0b1bad",
+        "version" : "1.2.2"
+      }
+    },
+    {
+      "identity" : "sdsswiftextension",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyagishi/SDSSwiftExtension",
+      "state" : {
+        "revision" : "4dc7f3adaf612af00f407910c53e2f25f3cc5db9",
+        "version" : "2.1.2"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "9ad9487c2448b3f1265ea2cc8af246b9cae6878d",
+        "version" : "0.56.1"
+      }
+    }
+  ],
+  "version" : 3
+}

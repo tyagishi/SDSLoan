@@ -17,7 +17,7 @@ public struct PaymentDateFrequency: Sendable, Codable, Hashable {
     let adjustment: PayDateAdjustment
     let calendar: Calendar
     
-    public let onePaymentMonthValue: Int
+    public let onePaymentMonthValue: Int // １回の支払いに 何ヶ月分の利息がつくか
     
     public init(matchComponent: [DateComponents], adjustment: PayDateAdjustment, calendar: Calendar = Calendar.current, ratio: Int) {
         self.matchComponent = matchComponent

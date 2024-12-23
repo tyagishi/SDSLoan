@@ -24,9 +24,6 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
     public var numOfPayment: Int // 1 year loan -> 12 times
     public var frequency: PaymentDateFrequency
 
-    public var bonusLoanAmount: Decimal?
-    public var bonusFrequency: PaymentDateFrequency?
-
     public let calendar: Calendar
 
     public init(id: UUID = UUID(),
@@ -43,8 +40,6 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
         self.loanAmount = loanAmount
         self.numOfPayment = numOfPayment
         self.frequency = frequency
-        self.bonusLoanAmount = bonusLoanAmount
-        self.bonusFrequency = bonusFrequency
         self.startDate = startDate
         self.calendar = calendar
     }
@@ -57,15 +52,6 @@ public struct LoanCondition: Identifiable, Codable, Hashable, Equatable, Sendabl
         let monthlyRate = ratePerPayment
         let p = pow(1 + monthlyRate, numOfPayment)
         let amount = loanAmount * monthlyRate * p / (p - 1.0)
-        return amount.rounding(.down)
-    }
-
-    public var oneBonusPaymentAmount: Decimal? {
-        guard let bonusLoanAmount = bonusLoanAmount,
-              let bonusFrequency = bonusFrequency else { return nil }
-        let calcRateForOnePayment = ratePerYear / Decimal(12) * Decimal(bonusFrequency.onePaymentMonthValue)
-        let p = pow(1 + calcRateForOnePayment, numOfBonusPayment)
-        let amount = bonusLoanAmount * calcRateForOnePayment * p / (p - 1.0)
         return amount.rounding(.down)
     }
 
